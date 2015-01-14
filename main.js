@@ -16,9 +16,9 @@
 
     EmojiSound = {
       playSound: function() {
-        var soundPlay = audioContext.createBufferSource(); // Declare a New Sound 
-        soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer 
-        soundPlay.connect(audioContext.destination); // Link the Sound to the Output 
+        var soundPlay = audioContext.createBufferSource(); // Declare a New Sound
+        soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer
+        soundPlay.connect(audioContext.destination); // Link the Sound to the Output
         soundPlay.start(0); // Play the Sound Immediately break;
       },
 
@@ -42,8 +42,8 @@
     }
 
     function composerClick(event) {
-        var newEmoji = Object.create(currentEmoji);
-        var siblings = [].slice.call(event.target.parentNode.children);
+        var newEmoji = Object.create(currentEmoji),
+            siblings = [].slice.call(event.target.parentNode.children);
         newEmoji.note = siblings.indexOf(event.target);
         newEmoji.image = document.createElement("img");
         newEmoji.image.className = "emojiNote";
