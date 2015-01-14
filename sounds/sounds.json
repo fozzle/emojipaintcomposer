@@ -1,1 +1,28 @@
-{"sounds":["clap.wav","duck.wav","fart.wav","partyHorn.wav","punch.wav","wink.wav"]}
+{
+    "sounds": [
+        {
+            "filename": "clap.wav",
+            "imagename": "clap.png"
+        },
+        {
+            "filename": "duck.wav",
+            "imagename": "duck.png"
+        },
+        {
+            "filename": "fart.wav",
+            "imagename": "poo.png"
+        },
+        {
+            "filename": "partyHorn.wav",
+            "imagename": "partyhorn.png"
+        },
+        {
+            "filename": "punch.wav",
+            "imagename": "facepunch.png"
+        },
+        {
+            "filename": "wink.wav",
+            "imagename": "wink.png"
+        }
+    ]
+}

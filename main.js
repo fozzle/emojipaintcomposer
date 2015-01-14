@@ -1,24 +1,33 @@
+function get(url, options, callback) {
+    var xml = new XMLHttpRequest();
+    xml.open("GET", url, true);
+    if (options) {
+        xml.responseType = options.responseType;
+    }
+    xml.onload = callback;
+    xml.send();
+}
+
 (function() {
 
   var AudioContext = window.AudioContext || window.webkitAudioContext,
     audioContex,
     audioBuffer,
-    soundFiles = ["clap.wav", "duck.wav", "fart.wav", "partyHorn.wav", "punch.wav", "wink.wav"],
     musicGrid = [],
     emojiDict,
+    emojiData,
     currentEmoji,
     toolBar = document.getElementById("toolbar"),
     composer = document.getElementById("composer");
-
     toolBar.addEventListener("click", toolBarClick);
     composer.addEventListener("click", composerClick);
 
 
     EmojiSound = {
       playSound: function() {
-        var soundPlay = audioContext.createBufferSource(); // Declare a New Sound 
-        soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer 
-        soundPlay.connect(audioContext.destination); // Link the Sound to the Output 
+        var soundPlay = audioContext.createBufferSource(); // Declare a New Sound
+        soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer
+        soundPlay.connect(audioContext.destination); // Link the Sound to the Output
         var semitoneRatio = Math.pow(2, 1/12);
         soundPlay.playbackRate.value = Math.pow(semitoneRatio, this.note*2);
         soundPlay.start(0); // Play the Sound Immediately break;
@@ -27,14 +36,13 @@
       loadSound: function(filename) {
         var self = this;
         var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
-        getSound.open("GET", "sounds/" + filename, true); // Path to Audio File
-        getSound.responseType = "arraybuffer"; // Read as Binary Data
-        getSound.onload = function() {
-          audioContext.decodeAudioData(getSound.response, function(buffer){
-            self.sound = buffer; // Decode the Audio Data and Store it in a Variable
-          });
-        };
-        getSound.send();
+        get("sounds/" + filename, {
+          responseType: "arraybuffer"
+        }, function() {
+            audioContext.decodeAudioData(this.response, function(buffer) {
+                self.sound = buffer;
+            });
+        });
       }
     };
 
@@ -59,15 +67,29 @@
         newEmoji.playSound();
     }
 
-    function populateEmojiDict() {
-      emojiDict = {};
-      soundFiles.forEach(function(fileName) {
-        key = fileName.split(".")[0];
-        var emojiObj = Object.create(EmojiSound);
-        emojiObj.imageURL = "emoji/poo.png";
-        emojiObj.loadSound(fileName);
-        emojiDict[key] = emojiObj;
-      });
+    function populateEmojis() {
+        emojiDict = {};
+        emojiData.sounds.forEach(function(emojiSoundObj) {
+            key = emojiSoundObj.filename.split(".")[0];
+            var emojiTool = document.createElement("li"),
+                emojiIcon = document.createElement("img");
+            emojiIcon.src = "emoji/" + emojiSoundObj.imagename;
+            emojiIcon.id = key;
+            emojiTool.appendChild(emojiIcon);
+            toolBar.appendChild(emojiTool);
+
+            var emojiObj = Object.create(EmojiSound);
+            emojiObj.imageURL = "emoji/" + emojiSoundObj.imagename;
+            emojiObj.loadSound(emojiSoundObj.filename);
+            emojiDict[key] = emojiObj;
+        });
+    }
+
+    function loadEmojiData() {
+        get("sounds/sounds.json", {}, function() {
+            emojiData = JSON.parse(this.responseText);
+            populateEmojis();
+        });
     }
 
     function initAudioContext() {
@@ -76,6 +98,5 @@
     }
 
     initAudioContext();
-    populateEmojiDict();
-
+    loadEmojiData();
 })();
