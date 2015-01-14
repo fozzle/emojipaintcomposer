@@ -20,7 +20,7 @@
         soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer 
         soundPlay.connect(audioContext.destination); // Link the Sound to the Output 
         var semitoneRatio = Math.pow(2, 1/12);
-        soundPlay.playbackRate.value = Math.pow(semitoneRatio, this.note*2);
+        soundPlay.playbackRate.value = Math.pow(semitoneRatio, 6*2 - this.note*2);
         soundPlay.start(0); // Play the Sound Immediately break;
       },
 
