@@ -1,0 +1,15 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#composer {
+    width: 70%;
+    float: left;
+}
+
+#toolbar {
+    width: 29%;
+    float: left;
+}

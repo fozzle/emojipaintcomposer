@@ -16,7 +16,6 @@
       playSound: function() {
         // Play sound based on note and inherit sound file.
         this.mediaSource.mediaElement.play();
-        this.mediaSource.mediaElement.currentTime = 0;
       },
 
       note: 0,
