@@ -15,7 +15,8 @@
     EmojiSound = {
       playSound: function() {
         // Play sound based on note and inherit sound file.
-        this.source.mediaElement.play();
+        this.mediaSource.mediaElement.play();
+        this.mediaSource.mediaElement.currentTime = 0;
       },
 
       note: 0,
