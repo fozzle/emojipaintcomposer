@@ -18,22 +18,22 @@
 
       playSound: function() {
 
-        var playSound = context.createBufferSource(); 
-        playSound.buffer = this.sound; 
+        var playSound = context.createBufferSource();
+        playSound.buffer = this.sound;
         playSound.connect(context.destination); playSound.start(0);
 
       },
 
       loadSound: function(filename) {
-        var sound; // Create the Sound  
-        var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest 
-        getSound.open("GET", "sounds/".concat(filename), true); // Path to Audio File 
-        getSound.responseType = "arraybuffer"; // Read as Binary Data 
-        getSound.onload = function() { 
-          audioContext.decodeAudioData(getSound.response, function(buffer){ 
-            sound = buffer; // Decode the Audio Data and Store it in a Variable 
-          }); 
-        }
+        var sound; // Create the Sound
+        var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
+        getSound.open("GET", "sounds/" + filename, true); // Path to Audio File
+        getSound.responseType = "arraybuffer"; // Read as Binary Data
+        getSound.onload = function() {
+          audioContext.decodeAudioData(getSound.response, function(buffer){
+            sound = buffer; // Decode the Audio Data and Store it in a Variable
+          });
+        };
         getSound.send();
       }
     };
