@@ -1,4 +1,5 @@
 (function() {
+
   var AudioContext = window.AudioContext || window.webkitAudioContext,
     audioContex,
     audioBuffer,
@@ -14,20 +15,26 @@
 
 
     EmojiSound = {
+
       playSound: function() {
-        // Play sound based on note and inherit sound file.
-        this.mediaSource.mediaElement.play();
+
+        var playSound = context.createBufferSource(); 
+        playSound.buffer = this.sound; 
+        playSound.connect(context.destination); playSound.start(0);
+
       },
 
-      note: 0,
-
-      createMediaSource: function() {
-        var audio = new Audio(),
-            source;
-        audio.src = this.soundFile;
-        source = audioContext.createMediaElementSource(audio);
-        source.connect(audioContext.destination);
-        this.mediaSource = source;
+      loadSound: function(filename) {
+        var sound; // Create the Sound  
+        var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest 
+        getSound.open("GET", "sounds/".concat(filename), true); // Path to Audio File 
+        getSound.responseType = "arraybuffer"; // Read as Binary Data 
+        getSound.onload = function() { 
+          audioContext.decodeAudioData(getSound.response, function(buffer){ 
+            sound = buffer; // Decode the Audio Data and Store it in a Variable 
+          }); 
+        }
+        getSound.send();
       }
     };
 
@@ -50,9 +57,7 @@
       soundFiles.forEach(function(fileName) {
         key = fileName.split(".")[0];
         var emojiObj = Object.create(EmojiSound);
-        emojiObj.soundFile = "sounds/" + fileName;
-        emojiObj.createMediaSource();
-        emojiDict[key] = emojiObj;
+        emojiObj.loadSound(fileName);
       });
     }
 
