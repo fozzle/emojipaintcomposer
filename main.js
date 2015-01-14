@@ -42,6 +42,9 @@
     }
 
     function composerClick(event) {
+        if (event.target.tagName != "LI") {
+            return;
+        }
         var newEmoji = Object.create(currentEmoji),
             siblings = [].slice.call(event.target.parentNode.children);
         newEmoji.note = siblings.indexOf(event.target);
