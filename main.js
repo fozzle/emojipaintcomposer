@@ -10,6 +10,7 @@
     composer = document.getElementById("composer");
 
     toolBar.addEventListener("click", toolBarClick);
+    composer.addEventListener("click", composerClick);
 
 
     EmojiSound = {
@@ -33,7 +34,15 @@
 
     function toolBarClick(event) {
       currentEmoji = emojiDict[event.target.id];
-      currentEmoji.playSound();
+    }
+
+    function composerClick(event) {
+        var newEmoji = Object.create(currentEmoji);
+        var siblings = [].slice.call(event.target.parentNode.children);
+        newEmoji.note = siblings.indexOf(event.target);
+        console.log(newEmoji.note);
+        musicGrid.push(newEmoji);
+        newEmoji.playSound();
     }
 
     function populateEmojiDict() {
