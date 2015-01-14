@@ -2,7 +2,7 @@
   var AudioContext = window.AudioContext || window.webkitAudioContext,
     audioContex,
     audioBuffer,
-    soundFiles = ["clap.wav", "duck.wav", "fart.wav", "ghost.wav", "heartbeat.wav", "partyHorn.wav", "punch.wav", "sob.wav", "twinkle.wav", "wink.wav"],
+    soundFiles = ["clap.wav", "duck.wav", "fart.wav", "partyHorn.wav", "punch.wav", "wink.wav"],
     musicGrid = [],
     emojiDict,
     currentEmoji,
@@ -11,6 +11,24 @@
 
     toolBar.addEventListener("click", toolBarClick);
 
+
+    EmojiSound = {
+      playSound: function() {
+        // Play sound based on note and inherit sound file.
+        this.source.mediaElement.play();
+      },
+
+      note: 0,
+
+      createMediaSource: function() {
+        var audio = new Audio(),
+            source;
+        audio.src = this.soundFile;
+        source = audioContext.createMediaElementSource(audio);
+        source.connect(audioContext.destination);
+        this.mediaSource = source;
+      }
+    };
 
 
     function toolBarClick(event) {
@@ -34,24 +52,7 @@
       audioBuffer = audioContext.createBuffer(2, 22050, 44100);
     }
 
-    populateEmojiDict();
     initAudioContext();
+    populateEmojiDict();
+
 })();
-
-var EmojiSound = function(note) {
-  this.note = note;
-};
-
-EmojiSound.protoype.playSound = function() {
-  // Play sound based on note and inherit sound file.
-  this.source.mediaElement.play();
-};
-
-EmojiSound.prototype.createMediaSource = function() {
-  var audio = new Audio(),
-      source;
-  audio.src = this.soundFile;
-  source = audioContext.createMediaElementSource(audio);
-  source.connect(audioContext.destination);
-  this.mediaSource = source;
-};
