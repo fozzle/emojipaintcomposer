@@ -15,23 +15,21 @@
 
 
     EmojiSound = {
-
       playSound: function() {
-
-        var playSound = context.createBufferSource();
-        playSound.buffer = this.sound;
-        playSound.connect(context.destination); playSound.start(0);
-
+        var soundPlay = audioContext.createBufferSource(); // Declare a New Sound 
+        soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer 
+        soundPlay.connect(audioContext.destination); // Link the Sound to the Output 
+        soundPlay.start(0); // Play the Sound Immediately break;
       },
 
       loadSound: function(filename) {
-        var sound; // Create the Sound
+        var self = this;
         var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
         getSound.open("GET", "sounds/" + filename, true); // Path to Audio File
         getSound.responseType = "arraybuffer"; // Read as Binary Data
         getSound.onload = function() {
           audioContext.decodeAudioData(getSound.response, function(buffer){
-            sound = buffer; // Decode the Audio Data and Store it in a Variable
+            self.sound = buffer; // Decode the Audio Data and Store it in a Variable
           });
         };
         getSound.send();
