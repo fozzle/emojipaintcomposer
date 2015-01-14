@@ -15,9 +15,16 @@ body {
     padding: 0;
     margin: 0;
     border-bottom: 1px solid gray;
+    position: relative;
 }
 
 #toolbar {
     width: 29%;
     float: left;
+}
+
+.emojiNote {
+    position: absolute;
+    height: 70%;
+    width: 24px;
 }
