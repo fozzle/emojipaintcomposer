@@ -18,12 +18,54 @@ function get(url, options, callback) {
     emojiData,
     currentEmoji,
     toolBar = document.getElementById("toolbar"),
-    composer = document.getElementById("composer");
-    toolBar.addEventListener("click", toolBarClick);
-    composer.addEventListener("click", composerClick);
+    composer;
 
+    function init() {
+        composer = Object.create(Composer);
+        composer.el = document.getElementById("composer");
+        composer.ctx = composer.el.getContext("2d");
+        composer.draw();
 
-    EmojiSound = {
+        toolBar.addEventListener("click", toolBarClick);
+        composer.el.addEventListener("click", composer.onClick.bind(composer));
+    }
+
+    var Composer = {
+        lines: 17,
+        emojiSize: 20,
+        draw: function() {
+            // Draw staff lines
+            var staffSpacing = Math.floor(this.el.height / this.lines);
+            var verticalPos;
+            for (var i = 1; i < this.lines; i++) {
+                if (!(i%2)) {
+                    verticalPos = staffSpacing * (i-1) + (staffSpacing/2);
+                    this.ctx.fillStyle = "#f0f0f0";
+                    this.ctx.fillRect(0, staffSpacing * (i-1), this.el.width, 20);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, verticalPos);
+                    this.ctx.lineTo(this.el.width, verticalPos);
+                    this.ctx.stroke();
+                }
+            }
+        },
+        onClick: function(event) {
+            // Determine location of click based on vertical denominator and horizontal denominator
+            var coords = {
+                x: event.clientX - this.el.offsetLeft,
+                y: event.clientY - this.el.offsetTop
+            };
+            var yNote = Math.floor(coords.y / this.emojiSize);
+            var xPos = Math.floor(coords.x / this.emojiSize);
+            var newEmoji = Object.create(currentEmoji);
+            newEmoji.note = yNote;
+            console.log(newEmoji.note, xPos);
+            musicGrid[xPos] = musicGrid[xPos] ? musicGrid[xPos].concat(newEmoji) : [newEmoji];
+            newEmoji.playSound();
+        },
+    };
+
+    var EmojiSound = {
       playSound: function() {
         var soundPlay = audioContext.createBufferSource(); // Declare a New Sound
         soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer
@@ -49,22 +91,6 @@ function get(url, options, callback) {
 
     function toolBarClick(event) {
       currentEmoji = emojiDict[event.target.id];
-    }
-
-    function composerClick(event) {
-        if (event.target.tagName != "LI") {
-            return;
-        }
-        var newEmoji = Object.create(currentEmoji),
-            siblings = [].slice.call(event.target.parentNode.children);
-        newEmoji.note = siblings.indexOf(event.target);
-        newEmoji.image = document.createElement("img");
-        newEmoji.image.className = "emojiNote";
-        newEmoji.image.src = newEmoji.imageURL;
-        event.target.appendChild(newEmoji.image);
-        console.log(newEmoji.note);
-        musicGrid.push(newEmoji);
-        newEmoji.playSound();
     }
 
     function populateEmojis() {
@@ -99,4 +125,7 @@ function get(url, options, callback) {
 
     initAudioContext();
     loadEmojiData();
+    init();
 })();
+
+
