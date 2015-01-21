@@ -24,6 +24,7 @@ function get(url, options, callback) {
         composer = Object.create(Composer);
         composer.el = document.getElementById("composer");
         composer.ctx = composer.el.getContext("2d");
+        composer.resize();
         composer.draw();
 
         toolBar.addEventListener("click", toolBarClick);
@@ -33,6 +34,9 @@ function get(url, options, callback) {
     var Composer = {
         lines: 17,
         emojiSize: 20,
+        resize: function() {
+            composer.el.width = window.innerWidth;
+        },
         draw: function() {
             // Draw staff lines
             var staffSpacing = Math.floor(this.el.height / this.lines);
@@ -62,6 +66,7 @@ function get(url, options, callback) {
             console.log(newEmoji.note, xPos);
             musicGrid[xPos] = musicGrid[xPos] ? musicGrid[xPos].concat(newEmoji) : [newEmoji];
             newEmoji.playSound();
+            this.ctx.drawImage(newEmoji.image, xPos * this.emojiSize, yNote * this.emojiSize, this.emojiSize, this.emojiSize);
         },
     };
 
@@ -106,6 +111,8 @@ function get(url, options, callback) {
 
             var emojiObj = Object.create(EmojiSound);
             emojiObj.imageURL = "emoji/" + emojiSoundObj.imagename;
+            emojiObj.image = new Image();
+            emojiObj.image.src = emojiObj.imageURL;
             emojiObj.loadSound(emojiSoundObj.filename);
             emojiDict[key] = emojiObj;
         });
