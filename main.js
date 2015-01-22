@@ -29,6 +29,7 @@ function get(url, options, callback) {
         toolBar.addEventListener("click", toolBarClick);
         composer.el.addEventListener("click", composer.onClick.bind(composer));
         document.getElementById("clear").addEventListener("click", composer.clear.bind(composer));
+        document.getElementById("play").addEventListener("click", composer.play.bind(composer));
     }
 
     var Composer = {
@@ -75,6 +76,20 @@ function get(url, options, callback) {
             newEmoji.playSound();
             this.ctx.drawImage(newEmoji.image, xPos * this.emojiSize, yNote * this.emojiSize, this.emojiSize, this.emojiSize);
         },
+        play: function() {
+            this.recursivePlay(0);
+        },
+        recursivePlay: function(gridIndex) {
+            setTimeout((function() {
+                if (gridIndex < this.musicGrid.length) {
+                    var emojiArray = this.musicGrid[gridIndex];
+                    for (var i in emojiArray) {
+                        emojiArray[i].playSound();
+                    }
+                    this.recursivePlay(gridIndex+1);
+                }
+            }).bind(this), 250);
+        }
     };
 
     var EmojiSound = {
