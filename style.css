@@ -20,6 +20,10 @@ body {
     list-style: none;
 }
 
+#toolbar li {
+    display: inline-block;
+}
+
 #toolbar li img {
     height: 20px;
     width: 20px;

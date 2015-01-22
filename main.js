@@ -13,7 +13,6 @@ function get(url, options, callback) {
   var AudioContext = window.AudioContext || window.webkitAudioContext,
     audioContex,
     audioBuffer,
-    musicGrid = [],
     emojiDict,
     emojiData,
     currentEmoji,
@@ -29,11 +28,13 @@ function get(url, options, callback) {
 
         toolBar.addEventListener("click", toolBarClick);
         composer.el.addEventListener("click", composer.onClick.bind(composer));
+        document.getElementById("clear").addEventListener("click", composer.clear.bind(composer));
     }
 
     var Composer = {
         lines: 17,
         emojiSize: 20,
+        musicGrid: [],
         resize: function() {
             composer.el.width = window.innerWidth;
         },
@@ -53,6 +54,12 @@ function get(url, options, callback) {
                 }
             }
         },
+        clear: function() {
+            this.musicGrid = [];
+            this.ctx.fillStyle = "#fff";
+            this.ctx.fillRect(0, 0, this.el.width, this.el.height);
+            this.draw();
+        },
         onClick: function(event) {
             // Determine location of click based on vertical denominator and horizontal denominator
             var coords = {
@@ -64,7 +71,7 @@ function get(url, options, callback) {
             var newEmoji = Object.create(currentEmoji);
             newEmoji.note = yNote;
             console.log(newEmoji.note, xPos);
-            musicGrid[xPos] = musicGrid[xPos] ? musicGrid[xPos].concat(newEmoji) : [newEmoji];
+            this.musicGrid[xPos] = this.musicGrid[xPos] ? this.musicGrid[xPos].concat(newEmoji) : [newEmoji];
             newEmoji.playSound();
             this.ctx.drawImage(newEmoji.image, xPos * this.emojiSize, yNote * this.emojiSize, this.emojiSize, this.emojiSize);
         },
@@ -73,7 +80,7 @@ function get(url, options, callback) {
     var EmojiSound = {
       playSound: function() {
         var soundPlay = audioContext.createBufferSource(); // Declare a New Sound
-        soundPlay.buffer = this.sound; // Attatch our Audio Data as it's Buffer
+        soundPlay.buffer = this.sound; // Attach our Audio Data as it's Buffer
         soundPlay.connect(audioContext.destination); // Link the Sound to the Output
         var semitoneRatio = Math.pow(2, 1/12);
         soundPlay.playbackRate.value = Math.pow(semitoneRatio, 6*2 - this.note*2);
