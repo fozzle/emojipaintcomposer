@@ -117,7 +117,15 @@ function get(url, options, callback) {
 
 
     function toolBarClick(event) {
-      currentEmoji = emojiDict[event.target.id];
+        var targetEl;
+        if (event.target.nodeName === "LI") {
+            targetEl = event.target;
+       } else {
+           targetEl = event.target.parentNode;
+       }
+        currentEmoji = emojiDict[targetEl.id];
+        [].slice.call(targetEl.parentNode.children).forEach(function(node) { node.className = ""; });
+        targetEl.className = "active";
     }
 
     function populateEmojis() {
@@ -127,7 +135,7 @@ function get(url, options, callback) {
             var emojiTool = document.createElement("li"),
                 emojiIcon = document.createElement("img");
             emojiIcon.src = "emoji/" + emojiSoundObj.imagename;
-            emojiIcon.id = key;
+            emojiTool.id = key;
             emojiTool.appendChild(emojiIcon);
             toolBar.appendChild(emojiTool);
 

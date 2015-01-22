@@ -24,6 +24,10 @@ body {
     display: inline-block;
 }
 
+#toolbar li.active {
+    border: 1px solid red;
+}
+
 #toolbar li img {
     height: 20px;
     width: 20px;
