@@ -1,28 +1,39 @@
 {
     "sounds": [
         {
+            "key": "clap",
             "filename": "clap.wav",
             "imagename": "clap.png"
         },
         {
+            "key": "duck",
             "filename": "duck.wav",
             "imagename": "duck.png"
         },
         {
+            "key": "poo",
             "filename": "fart.wav",
             "imagename": "poo.png"
         },
         {
+            "key": "partyhorn",
             "filename": "partyHorn.wav",
             "imagename": "partyhorn.png"
         },
         {
+            "key": "punch",
             "filename": "punch.wav",
             "imagename": "facepunch.png"
         },
         {
+            "key": "wink",
             "filename": "wink.wav",
             "imagename": "wink.png"
+        },
+        {
+            "key": "scissors",
+            "filename": null,
+            "imagename": "scissors.png"
         }
     ]
 }

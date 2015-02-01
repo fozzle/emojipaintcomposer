@@ -40,10 +40,19 @@ function get(url, options, callback) {
             composer.el.width = window.innerWidth;
         },
         draw: function() {
+            // Clear drawing.
+            this.ctx.fillStyle = "#fff";
+            this.ctx.fillRect(0, 0, this.el.width, this.el.height);
+
             // Draw staff lines
-            var staffSpacing = Math.floor(this.el.height / this.lines);
-            var verticalPos;
-            for (var i = 1; i < this.lines; i++) {
+            var staffSpacing = Math.floor(this.el.height / this.lines),
+                verticalPos,
+                i,
+                j,
+                column,
+                storedEmoji;
+
+            for (i = 1; i < this.lines; i++) {
                 if (!(i%2)) {
                     verticalPos = staffSpacing * (i-1) + (staffSpacing/2);
                     this.ctx.fillStyle = "#f0f0f0";
@@ -54,11 +63,19 @@ function get(url, options, callback) {
                     this.ctx.stroke();
                 }
             }
+
+            // Draw any emojis
+            for (i = 0; i < this.musicGrid.length; i++) {
+                column = this.musicGrid[i];
+                if (!column) continue;
+                for (j = 0; j < column.length; j++) {
+                    storedEmoji = column[j];
+                    this.ctx.drawImage(storedEmoji.image, i * this.emojiSize, storedEmoji.note * this.emojiSize, this.emojiSize, this.emojiSize);
+                }
+            }
         },
         clear: function() {
             this.musicGrid = [];
-            this.ctx.fillStyle = "#fff";
-            this.ctx.fillRect(0, 0, this.el.width, this.el.height);
             this.draw();
         },
         onClick: function(event) {
@@ -69,6 +86,14 @@ function get(url, options, callback) {
             };
             var yNote = Math.floor(coords.y / this.emojiSize);
             var xPos = Math.floor(coords.x / this.emojiSize);
+
+            // Special: current Emoji is deletion tool wipe out last emoji at index and redraw
+            if (!currentEmoji.filename) {
+                this.musicGrid[xPos] = this.musicGrid[xPos].slice(0, this.musicGrid[xPos].length - 1);
+                this.draw();
+                return;
+            }
+
             var newEmoji = Object.create(currentEmoji);
             newEmoji.note = yNote;
             console.log(newEmoji.note, xPos);
@@ -104,6 +129,7 @@ function get(url, options, callback) {
 
       loadSound: function(filename) {
         var self = this;
+        this.filename = filename;
         var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
         get("sounds/" + filename, {
           responseType: "arraybuffer"
@@ -131,7 +157,7 @@ function get(url, options, callback) {
     function populateEmojis() {
         emojiDict = {};
         emojiData.sounds.forEach(function(emojiSoundObj) {
-            key = emojiSoundObj.filename.split(".")[0];
+            key = emojiSoundObj.key;
             var emojiTool = document.createElement("li"),
                 emojiIcon = document.createElement("img");
             emojiIcon.src = "emoji/" + emojiSoundObj.imagename;
@@ -143,13 +169,13 @@ function get(url, options, callback) {
             emojiObj.imageURL = "emoji/" + emojiSoundObj.imagename;
             emojiObj.image = new Image();
             emojiObj.image.src = emojiObj.imageURL;
-            emojiObj.loadSound(emojiSoundObj.filename);
+            if (emojiSoundObj.filename) emojiObj.loadSound(emojiSoundObj.filename);
             emojiDict[key] = emojiObj;
         });
     }
 
     function loadEmojiData() {
-        get("sounds/sounds.json", {}, function() {
+        get("sounds.json", {}, function() {
             emojiData = JSON.parse(this.responseText);
             populateEmojis();
         });
