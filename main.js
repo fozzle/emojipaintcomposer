@@ -150,6 +150,7 @@ function get(url, options, callback) {
            targetEl = event.target.parentNode;
        }
         currentEmoji = emojiDict[targetEl.id];
+        composer.el.style.cursor = 'url(' + currentEmoji.imageURL + ') 10 10, default';
         [].slice.call(targetEl.parentNode.children).forEach(function(node) { node.className = ""; });
         targetEl.className = "active";
     }
