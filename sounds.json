@@ -31,6 +31,11 @@
             "imagename": "wink.png"
         },
         {
+            "key": "car",
+            "filename": "carhonk.wav",
+            "imagename": "car.png"
+        },
+        {
             "key": "scissors",
             "filename": null,
             "imagename": "scissors.png"
