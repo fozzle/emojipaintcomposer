@@ -36,6 +36,11 @@
             "imagename": "car.png"
         },
         {
+            "key": "waterdrop",
+            "filename": "waterdrop.wav",
+            "imagename": "drop.png"
+        },
+        {
             "key": "scissors",
             "filename": null,
             "imagename": "scissors.png"
