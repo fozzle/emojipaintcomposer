@@ -89,7 +89,13 @@ function get(url, options, callback) {
 
             // Special: current Emoji is deletion tool wipe out last emoji at index and redraw
             if (!currentEmoji.filename) {
-                this.musicGrid[xPos] = this.musicGrid[xPos].slice(0, this.musicGrid[xPos].length - 1);
+                for (var i = this.musicGrid[xPos].length - 1; i >= 0; i--) {
+                    var existingNote = this.musicGrid[xPos][i];
+                    if (existingNote && existingNote.note === yNote) {
+                        this.musicGrid[xPos].splice(i, 1);
+                        break;
+                    }
+                }
                 this.draw();
                 return;
             }
